@@ -46,12 +46,14 @@ namespace SPECT
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    DetectorConstruction() = default; // set as default, so no need to specify agin in .cc; constructor are NEVER inherited or virtual in c++ -> nothing to override
+    DetectorConstruction(); // set as default, so no need to specify agin in .cc; constructor are NEVER inherited or virtual in c++ -> nothing to override
     ~DetectorConstruction() override = default; // set as default, so no need to specify agin in .cc
     G4LogicalVolume* GetPhantomLogicalVolume(const G4String& name) const;
 
   public:
     virtual G4VPhysicalVolume* Construct() override;
+    void ConstructSDandField();
+    G4LogicalVolume* crystalLV;
 
 };
 

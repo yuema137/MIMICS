@@ -2,6 +2,7 @@
 /// \brief Implementation of the DetectorConstruction class
 
 #include "DetectorConstruction.hh"
+#include "TargetSD.hh"
 
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
@@ -15,9 +16,15 @@
 #include "G4Color.hh"
 #include "G4AssemblyVolume.hh"
 #include "G4Transform3D.hh"
+#include "G4SDManager.hh"
 
 namespace SPECT
 {
+
+DetectorConstruction::DetectorConstruction()
+{
+    crystalLV = 0;
+}
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
@@ -171,7 +178,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4Material* crystalMaterial = TlBr;
 
     // Create logical volume for the crystal
-    G4LogicalVolume* crystalLV = new G4LogicalVolume(crystalShape, crystalMaterial, "CrystalLV");
+    crystalLV = new G4LogicalVolume(crystalShape, crystalMaterial, "CrystalLV");
 
     // Set the color to yellow
     G4VisAttributes* crystal_vis_att = new G4VisAttributes(G4Colour(255/255, 245/255, 238/255)); 
@@ -206,6 +213,33 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
     return physicsWorld; // return the whole physics world
+}
+
+
+void DetectorConstruction::ConstructSDandField()
+{
+    // Use G4ThreadLocal to ensure one instance per thread
+    static G4ThreadLocal TargetSD* fTargetSD = nullptr;
+    if (!fTargetSD)
+    {
+        // Create the sensitive detector
+        fTargetSD = new TargetSD("targetSD");
+        
+        // Register the sensitive detector with G4SDManager
+        G4SDManager::GetSDMpointer()->AddNewDetector(fTargetSD);
+        
+        // Set the sensitive detector for the logical volume
+        if (crystalLV)
+        {
+            crystalLV->SetSensitiveDetector(fTargetSD);
+        }
+        else
+        {
+            G4Exception("DetectorConstruction::ConstructSDandField()",
+                        "InvalidSetup", FatalException,
+                        "crystalLV is not initialized!");
+        }
+    }
 }
 
 

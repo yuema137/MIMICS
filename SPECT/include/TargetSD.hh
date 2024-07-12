@@ -8,6 +8,22 @@
 #include "G4VSensitiveDetector.hh"
 #include "globals.hh"
 
+namespace SPECT
+{
+
+class TargetSD : public G4VSensitiveDetector
+{
+    public:
+        TargetSD(const G4String&);
+        virtual ~TargetSD();
+
+        void Initialize(G4HCofThisEvent*);
+        virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+        void EndOfEvent(G4HCofThisEvent*);
+
+};
+
+}
 
 
 
