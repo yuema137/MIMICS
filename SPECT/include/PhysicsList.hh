@@ -1,3 +1,6 @@
+/// \file SPECT/include/PhysicsList.hh
+/// \brief Definition of the SPECT::PhysicsList class
+
 #ifndef PHYSICS_HH
 #define PHYSICS_HH 1
 

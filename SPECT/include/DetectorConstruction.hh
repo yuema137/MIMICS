@@ -24,8 +24,8 @@
 // ********************************************************************
 //
 //
-/// \file B1/include/DetectorConstruction.hh
-/// \brief Definition of the B1::DetectorConstruction class
+/// \file SPECT/include/DetectorConstruction.hh
+/// \brief Definition of the SPECT::DetectorConstruction class
 
 #ifndef DETECTOR_CONSTRUCTION_HH
 #define DETECTOR_CONSTRUCTION_HH 1

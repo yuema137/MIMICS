@@ -1,4 +1,4 @@
-/// \file B1/include/ActionInitialization.hh
+/// \file SPECT/include/ActionInitialization.hh
 /// \brief Definition of the SPECT::ActionInitialization class
 
 #ifndef ACTION_INITIALIZATION_HH
