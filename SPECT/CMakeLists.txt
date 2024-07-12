@@ -45,7 +45,7 @@ target_link_libraries(run ${Geant4_LIBRARIES})
 
 # (6)----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
-# build B1. This is so that we can run the executable directly because it
+# build SPECT. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
 set(SCRIPTS
