@@ -29,9 +29,29 @@
 # Draw hits at end of event:
 #/vis/scene/add/hits
 
-# To draw only gammas:
-#/vis/filtering/trajectories/create/particleFilter
-#/vis/filtering/trajectories/particleFilter-0/add gamma
+# Show steps and their energy depositions
+/vis/scene/add/trajectories rich
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+
+# Color code particles
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set e- red
+/vis/modeling/trajectories/drawByParticleID-0/set e+ blue
+/vis/modeling/trajectories/drawByParticleID-0/set gamma green
+
+# Show particle names and energies
+/vis/scene/add/eventID
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories rich
+/vis/filtering/trajectories/create/particleFilter
+/vis/filtering/trajectories/particleFilter-0/add gamma
+/vis/filtering/trajectories/particleFilter-0/add e-
+/vis/filtering/trajectories/particleFilter-0/add e+
+
+# Show energy depositions
+/vis/scene/add/hits
 
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate
