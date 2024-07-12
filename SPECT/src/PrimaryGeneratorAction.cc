@@ -19,7 +19,7 @@ namespace SPECT
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
-    G4int n_particle = 100;
+    G4int n_particle = 1;
     fParticleGun = new G4ParticleGun(n_particle);
 
     // Default particle kinematic
@@ -72,7 +72,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
     // Set the angle
-    G4double maxTheta = std::atan(10.0/20.0); // Your specified angle
+    G4double maxTheta = std::atan(5/20.0); // Your specified angle
     G4double phi = 2 * M_PI * G4UniformRand(); // Random azimuthal angle
     G4double theta = std::acos(1 - G4UniformRand() * (1 - std::cos(maxTheta))); // Random polar angle
 

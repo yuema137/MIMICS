@@ -1,18 +1,27 @@
 #ifndef PHYSICS_HH
 #define PHYSICS_HH 1
 
-#include "G4VUserPhysicsList.hh"
 #include "G4VModularPhysicsList.hh"
-#include "G4EmStandardPhysics.hh"
-#include "G4OpticalPhysics.hh"
+#include "G4EmStandardPhysics_option4.hh"
+#include "G4DecayPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
 
-namespace SPECT{
-class PhysicsList: public G4VModularPhysicsList
+namespace SPECT
 {
-  public:
-    PhysicsList();
-   ~PhysicsList() override = default; // set as default, so no need to specify agin in .cc
 
+class PhysicsList : public G4VModularPhysicsList
+{
+public:
+    PhysicsList();
+    virtual ~PhysicsList() = default;
+
+    virtual void SetCuts() override;
+
+protected:
+    virtual void ConstructParticle() override;
+    virtual void ConstructProcess() override;
 };
+
 }
+
 #endif
