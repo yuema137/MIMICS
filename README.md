@@ -1,1 +1,2 @@
-# G4_FOR_FUN
+# MIMICS
+Medical Imaging Monte carlo Integrated Chain Simulator
