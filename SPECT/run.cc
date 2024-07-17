@@ -11,7 +11,7 @@
 
 #include "PhysicsList.hh"
 #include <iostream>
-
+#include <string>
 
 using namespace SPECT;
 
@@ -31,22 +31,34 @@ int main(int argc, char** argv)
     std::cout << "Initialization Done" << std::endl;
 
     G4UIExecutive* ui = nullptr;
-    if ( argc == 1 ) { ui = new G4UIExecutive(argc, argv); }
-    G4VisManager *visManager = new G4VisExecutive();
-    visManager->Initialize();
+    G4VisManager* visManager = nullptr;
 
     auto UImanager = G4UImanager::GetUIpointer();
-    if ( ! ui ) {
-        // batch mode
+
+    // Check if --vis argument is provided
+    bool visMode = false;
+    if (argc > 1 && std::string(argv[1]) == "--vis") {
+        visMode = true;
+    }
+
+    if (visMode) {
+        // Visualization mode
+        ui = new G4UIExecutive(argc, argv);
+        visManager = new G4VisExecutive();
+        visManager->Initialize();
+
+        UImanager->ApplyCommand("/control/execute init_vis.mac");
+        ui->SessionStart();
+    } else {
+        // Batch mode
+        if (argc < 2) {
+            std::cerr << "Error: No macro file provided for batch mode." << std::endl;
+            std::cerr << "Usage: ./run <macro_file> or ./run --vis" << std::endl;
+            return 1;
+        }
         G4String command = "/control/execute ";
         G4String fileName = argv[1];
         UImanager->ApplyCommand(command+fileName);
-    }
-    else {
-        // interactive mode
-        UImanager->ApplyCommand("/control/execute init_vis.mac");
-        ui->SessionStart();
-        delete ui;
     }
 
     delete visManager;
