@@ -1,1 +1,13 @@
+# c++ build
 /build
+
+# python venv
+.venv
+
+# jupyternotebook cache
+.ipynb_checkpoints
+__pycache__
+
+# data file
+*.root
+*.csv
