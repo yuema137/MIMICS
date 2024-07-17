@@ -5,6 +5,8 @@
 #define ACTION_INITIALIZATION_HH 1
 
 #include "G4VUserActionInitialization.hh"
+#include "RunAction.hh"
+
 
 namespace SPECT
 {

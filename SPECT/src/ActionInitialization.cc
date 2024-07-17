@@ -10,7 +10,12 @@ namespace SPECT
 
 void ActionInitialization::Build() const
 {
-  SetUserAction(new PrimaryGeneratorAction());
+  PrimaryGeneratorAction* generator = new PrimaryGeneratorAction();
+  SetUserAction(generator);
+
+  RunAction *runAction = new RunAction();
+  SetUserAction(runAction);
+
 }
 
 
