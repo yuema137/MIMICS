@@ -11,3 +11,6 @@ __pycache__
 # data file
 *.root
 *.csv
+
+# vscode
+.vscode
