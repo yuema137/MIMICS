@@ -1,0 +1,31 @@
+# Macro for Co-57 decay simulation
+
+# set a high time threshold
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+
+/run/initialize
+
+# Set up the particle gun for Co-57
+/gun/particle ion
+
+# atomic mass other states
+/gun/ion 27 57 0 0
+
+# Set initial kinetic energy to 0
+/gun/energy 0 keV
+
+# Set position (adjust as needed for your geometry)
+/gun/position 0 0 0 cm
+
+# Set direction (isotropic distribution)
+/gun/direction 1 0 0
+
+# Verbose tracking for the first event
+/tracking/verbose 2
+/run/beamOn 1
+
+# Turn off verbose tracking for the rest of the events
+/tracking/verbose 0
+
+# Run the simulation
+/run/beamOn 100

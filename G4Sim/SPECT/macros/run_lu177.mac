@@ -1,0 +1,31 @@
+# Macro for Lu-177 decay simulation
+
+/mydetector/includeCollimator false
+/run/initialize
+
+# set a high time threshold
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+
+# Set up the particle gun for Lu-177
+/gun/particle ion
+/gun/ion 71 177 0 0
+
+# Set initial kinetic energy to 0
+/gun/energy 0 keV
+
+# Set position (adjust as needed for your geometry)
+/gun/position 0 0 0 cm
+
+# Set direction (isotropic distribution)
+/gun/direction 1 0 0
+
+# Verbose tracking for the first event
+/tracking/verbose 2
+/run/beamOn 1
+
+# Turn off verbose tracking for the rest of the events
+/tracking/verbose 0
+
+# Run the simulation
+/run/printProgress 10000
+/run/beamOn 500000
