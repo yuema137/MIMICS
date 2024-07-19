@@ -31,6 +31,7 @@
 #define DETECTOR_CONSTRUCTION_HH 1
 
 #include "G4VUserDetectorConstruction.hh"
+#include "DetectorMessenger.hh"
 #include "globals.hh"
 #include "G4Box.hh"
 #include <map>
@@ -47,13 +48,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
     DetectorConstruction(); // set as default, so no need to specify agin in .cc; constructor are NEVER inherited or virtual in c++ -> nothing to override
-    ~DetectorConstruction() override = default; // set as default, so no need to specify agin in .cc
+    ~DetectorConstruction() override; // set as default, so no need to specify agin in .cc
     G4LogicalVolume* GetPhantomLogicalVolume(const G4String& name) const;
+    void SetIncludeCollimator(G4bool include) {fIncludeCollimator = include;}
 
   public:
     virtual G4VPhysicalVolume* Construct() override;
     void ConstructSDandField();
     G4LogicalVolume* crystalLV;
+
+  private:
+    G4bool fIncludeCollimator;
+    DetectorMessenger * fMessenger;
 
 };
 

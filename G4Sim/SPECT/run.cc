@@ -3,12 +3,10 @@
 
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
-
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
-
 #include "PhysicsList.hh"
 #include <iostream>
 #include <string>
@@ -22,13 +20,10 @@ int main(int argc, char** argv)
     runManager->SetUserInitialization(detConstruction);
 
     runManager->SetUserInitialization(new PhysicsList());
-    std::cout << "Physicslist Done" << std::endl;
+    std::cout << "PhysicsList Done" << std::endl;
 
     runManager->SetUserInitialization(new ActionInitialization());
     std::cout << "ActionInitialization Done" << std::endl;
-
-    runManager->Initialize();
-    std::cout << "Initialization Done" << std::endl;
 
     G4UIExecutive* ui = nullptr;
     G4VisManager* visManager = nullptr;
@@ -47,7 +42,13 @@ int main(int argc, char** argv)
         visManager = new G4VisExecutive();
         visManager->Initialize();
 
-        UImanager->ApplyCommand("/control/execute init_vis.mac");
+        // Execute init_vis.mac before initializing the run manager
+        UImanager->ApplyCommand("/control/execute ./macros/init_vis.mac");
+        
+        // Initialize the run manager after executing init_vis.mac
+        runManager->Initialize();
+        std::cout << "Initialization Done" << std::endl;
+
         ui->SessionStart();
     } else {
         // Batch mode
@@ -56,12 +57,20 @@ int main(int argc, char** argv)
             std::cerr << "Usage: ./run <macro_file> or ./run --vis" << std::endl;
             return 1;
         }
+        
+        // Execute the provided macro file
         G4String command = "/control/execute ";
         G4String fileName = argv[1];
         UImanager->ApplyCommand(command+fileName);
+        
+        // Initialize the run manager after executing the macro
+        runManager->Initialize();
+        std::cout << "Initialization Done" << std::endl;
     }
 
     delete visManager;
     delete ui;
     delete runManager;
+
+    return 0;
 }

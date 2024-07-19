@@ -21,9 +21,15 @@
 namespace SPECT
 {
 
-DetectorConstruction::DetectorConstruction()
+DetectorConstruction::DetectorConstruction(): crystalLV(nullptr), fIncludeCollimator(true)
 {
     crystalLV = 0;
+    fMessenger = new DetectorMessenger(this);
+}
+
+DetectorConstruction::~DetectorConstruction()
+{
+    delete fMessenger;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -84,60 +90,67 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     
     // -------------------------------------------------------Collimator-------------------------------------------------------------
-    G4cout << "Starting collimator construction..." << G4endl;
+    G4double col_phan_f2f;
+    G4double collimator_x;
+    G4double collimator_y;
+    G4double collimator_z;
 
-    G4Material* lead = nist->FindOrBuildMaterial("G4_Pb");
-    if (!lead) {
-        G4cerr << "Failed to create lead material. Cannot proceed with collimator construction." << G4endl;
-    }
+    if (fIncludeCollimator)
+    {
+        G4cout << "Starting collimator construction..." << G4endl;
 
-    G4cout << "Successfully created lead material." << G4endl;
-    G4cout << "Lead density: " << lead->GetDensity() / (g/cm3) << " g/cm3" << G4endl;
-
-    // Define collimator parameters
-    G4double collimator_x = 100.0*mm;
-    G4double collimator_y = 100.0*mm;
-    G4double collimator_z = 10.0*mm;
-    G4double hole_radius = 1*mm;
-    G4double hole_spacing = 2.0*mm; // Center-to-center gap between holes
-
-    G4cout << "Collimator dimensions: " << collimator_x/mm << " x " << collimator_y/mm << " x " << collimator_z/mm << " mm" << G4endl;
-
-    // Create the main collimator box
-    G4Box* collimator_box = new G4Box("Collimator", collimator_x/2, collimator_y/2, collimator_z/2);
-    G4LogicalVolume* collimator_logic = new G4LogicalVolume(collimator_box, lead, "Collimator_Logic");
-
-    // Create a single hole
-    G4Tubs* hole_solid = new G4Tubs("Hole", 0., hole_radius, collimator_z/2 + 1*nm, 0., 360.*deg);
-    G4LogicalVolume* hole_logic = new G4LogicalVolume(hole_solid, world_mat, "Hole_Logic");
-
-    // Calculate the number of holes
-    int num_holes_x = static_cast<int>((collimator_x - hole_spacing) / hole_spacing) + 1;
-    int num_holes_y = static_cast<int>((collimator_y - hole_spacing) / hole_spacing) + 1;
-
-    G4cout << "Number of holes: " << num_holes_x << " x " << num_holes_y << G4endl;
-
-    // Create an assembly for the collimator with holes
-    G4AssemblyVolume* collimatorAssembly = new G4AssemblyVolume();
-
-    // Add the main collimator to the assembly
-    G4ThreeVector collimatorPos(0, 0, 0);
-    G4RotationMatrix collimatorRot;
-    collimatorAssembly->AddPlacedVolume(collimator_logic, collimatorPos, &collimatorRot);
-
-    // Add holes to the assembly
-    for (int i = 0; i < num_holes_x; i++) {
-        for (int j = 0; j < num_holes_y; j++) {
-            G4double x = (i - (num_holes_x-1)/2.0) * hole_spacing;
-            G4double y = (j - (num_holes_y-1)/2.0) * hole_spacing;
-            G4ThreeVector holePos(x, y, 0);
-            G4RotationMatrix holeRot;
-            collimatorAssembly->AddPlacedVolume(hole_logic, holePos, &holeRot);
+        G4Material* lead = nist->FindOrBuildMaterial("G4_Pb");
+        if (!lead) {
+            G4cerr << "Failed to create lead material. Cannot proceed with collimator construction." << G4endl;
         }
-    }
+
+        G4cout << "Successfully created lead material." << G4endl;
+        G4cout << "Lead density: " << lead->GetDensity() / (g/cm3) << " g/cm3" << G4endl;
+
+        // Define collimator parameters
+        collimator_x = 100.0*mm;
+        collimator_y = 100.0*mm;
+        collimator_z = 10.0*mm;
+        G4double hole_radius = 1*mm;
+        G4double hole_spacing = 2.0*mm; // Center-to-center gap between holes
+
+        G4cout << "Collimator dimensions: " << collimator_x/mm << " x " << collimator_y/mm << " x " << collimator_z/mm << " mm" << G4endl;
+
+        // Create the main collimator box
+        G4Box* collimator_box = new G4Box("Collimator", collimator_x/2, collimator_y/2, collimator_z/2);
+        G4LogicalVolume* collimator_logic = new G4LogicalVolume(collimator_box, lead, "Collimator_Logic");
+
+        // Create a single hole
+        G4Tubs* hole_solid = new G4Tubs("Hole", 0., hole_radius, collimator_z/2 + 1*nm, 0., 360.*deg);
+        G4LogicalVolume* hole_logic = new G4LogicalVolume(hole_solid, world_mat, "Hole_Logic");
+
+        // Calculate the number of holes
+        int num_holes_x = static_cast<int>((collimator_x - hole_spacing) / hole_spacing) + 1;
+        int num_holes_y = static_cast<int>((collimator_y - hole_spacing) / hole_spacing) + 1;
+
+        G4cout << "Number of holes: " << num_holes_x << " x " << num_holes_y << G4endl;
+
+        // Create an assembly for the collimator with holes
+        G4AssemblyVolume* collimatorAssembly = new G4AssemblyVolume();
+
+        // Add the main collimator to the assembly
+        G4ThreeVector collimatorPos(0, 0, 0);
+        G4RotationMatrix collimatorRot;
+        collimatorAssembly->AddPlacedVolume(collimator_logic, collimatorPos, &collimatorRot);
+
+        // Add holes to the assembly
+        for (int i = 0; i < num_holes_x; i++) {
+            for (int j = 0; j < num_holes_y; j++) {
+                G4double x = (i - (num_holes_x-1)/2.0) * hole_spacing;
+                G4double y = (j - (num_holes_y-1)/2.0) * hole_spacing;
+                G4ThreeVector holePos(x, y, 0);
+                G4RotationMatrix holeRot;
+                collimatorAssembly->AddPlacedVolume(hole_logic, holePos, &holeRot);
+            }
+        }
 
     // Position the collimator assembly
-    G4double col_phan_f2f = 20*cm;
+    col_phan_f2f = 20*cm;
     G4double phantom_thickness = 2 * fPhantom->GetZHalfLength(); // Assuming fPhantom is accessible and contains the phantom
     G4cout << "Phantom Thickness: " << phantom_thickness/mm << " mm" << G4endl;
 
@@ -152,7 +165,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     col_vis_att->SetVisibility(true);
     col_vis_att->SetForceSolid(true); // This makes it appear as a solid blue volume instead of just wireframe
     collimator_logic->SetVisAttributes(col_vis_att);
-
+    }
+    else
+    {
+        G4cout << "Collimator not included in this run." << G4endl;
+    }
     
     //  -------------------------------------------------------Crystal-------------------------------------------------------------
     G4Element* ele_Tl = nist->FindOrBuildElement("Tl");
@@ -191,8 +208,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double startPosY = -0.5 * (crystalY + gap);
 
     // Place each crystal in the world, based on the f2f
+    G4double posZ;
+    if (fIncludeCollimator)
+    {
     G4double col_crystal_f2f = 2*mm;
-    G4double posZ = -( 0.5 * phantom1_size_z + col_phan_f2f + collimator_z + 0.5 * crystalZ + col_crystal_f2f);
+    posZ = -( 0.5 * phantom1_size_z + col_phan_f2f + collimator_z + 0.5 * crystalZ + col_crystal_f2f);
+    }
+    else
+    {
+    G4double phan_crystal_f2f = 10*cm;
+    posZ = -( 0.5 * phantom1_size_z + phan_crystal_f2f + 0.5 * crystalZ);
+    }
 
     for (int ix = 0; ix < 2; ++ix) {
         for (int iy = 0; iy < 2; ++iy) {
