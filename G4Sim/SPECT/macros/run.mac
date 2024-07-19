@@ -1,0 +1,3 @@
+/run/initialize
+/run/printProgress 10000
+/run/beamOn 100000
