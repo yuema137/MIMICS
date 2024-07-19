@@ -35,10 +35,9 @@ include_directories(${Geant4_INCLUDE_DIRS})
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-file(GLOB MOCRO_FILES
-  "*.mac")
 
-file(COPY ${MOCRO_FILES} DESTINATION ${PROJECT_BINARY_DIR})
+# Copy the entire macros folder to the build directory
+file(COPY ${CMAKE_SOURCE_DIR}/macros DESTINATION ${CMAKE_BINARY_DIR})
 
 # (5)----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
