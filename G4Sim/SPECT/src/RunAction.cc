@@ -5,7 +5,6 @@ namespace SPECT
 RunAction::RunAction()
 {   
     auto analysis_manager = G4AnalysisManager::Instance();
-    G4AnalysisManager::Instance()->SetDefaultFileType("csv");
 }
 
 RunAction::~RunAction()
