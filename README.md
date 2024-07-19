@@ -6,7 +6,8 @@ Medical Imaging Monte carlo Integrated Chain Simulator. This Repo provides full-
 - Combinations, i.e. SPECT/CT, PET/CT
 
 ## Modules
-- GEANT4 simulation for energy deposit
-- Python simulation for further conversions (electron-hole generation and propogations in semiconductor, sintillations in scintilators, etc.)
-- Traditional Reconstruction Algorithms with Python
-- Basic ML Models Implemented with Pytorch
+- `G4Sim`: GEANT4 simulation for energy deposit
+- `Analysis`: Python scripts and notebooks for data analysis and visualization
+- `PySim`: Python simulation for further conversions (electron-hole generation and propogations in semiconductor, sintillations in scintilators, etc.)
+- `Reconstruction`: Traditional Reconstruction Algorithms with Python
+- `MLRec`: Example ML projects with simulated data
