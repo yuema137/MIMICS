@@ -1,5 +1,7 @@
 # MIMICS
-Medical Imaging Monte carlo Integrated Chain Simulator. This Repo provides full-chain simulations and reconstructions for prototypes of:
+Medical Imaging Monte Carlo Integrated Chain Simulator, built with GEANT4 and Python
+
+This Repo provides full-chain simulations and reconstructions for prototypes of:
 - SPECT
 - PET
 - CT
